@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agente de Segurança RJ - IA Multilíngue</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e63946 0%, #a4161a 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 700px;
+            width: 100%;
+            padding: 30px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #e63946;
+            padding-bottom: 20px;
+        }
+
+        .magna-title {
+            font-size: 48px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #22c55e 0%, #84cc16 50%, #22c55e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(34, 197, 94, 0.5);
+            filter: drop-shadow(0 0 15px rgba(34, 197, 94, 0.6));
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                filter: drop-shadow(0 0 15px rgba(34, 197, 94, 0.6));
+            }
+            50% {
+                filter: drop-shadow(0 0 25px rgba(34, 197, 94, 0.9));
+            }
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e63946;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .language-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .lang-btn {
+            padding: 12px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+
+        .lang-btn:hover {
+            border-color: #e63946;
+            background: #ffe5e5;
+        }
+
+        .lang-btn.active {
+            background: #e63946;
+            color: white;
+            border-color: #e63946;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #e63946;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .btn-send {
+            background: #e63946;
+            color: white;
+        }
+
+        .btn-send:hover {
+            background: #a4161a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(230, 57, 70, 0.4);
+        }
+
+        .btn-send:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-clear {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-clear:hover {
+            background: #e0e0e0;
+        }
+
+        .response-area {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 100px;
+            display: none;
+        }
+
+        .response-area.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .response-label {
+            color: #e63946;
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .response-text {
+            color: #333;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #e63946;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .info-box {
+            background: #ffe5e5;
+            border-left: 4px solid #e63946;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .info-box strong {
+            color: #e63946;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .language-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="magna-title">MAGNA</div>
+            <h1>🛡️ Agente de Segurança RJ</h1>
+            <p>Informações sobre segurança para mulheres no Rio de Janeiro</p>
+            <span class="badge">🌍 Multilíngue</span>
+        </div>
+
+        <div class="input-group">
+            <label>Selecione o idioma da sua pergunta:</label>
+            <div class="language-selector">
+                <button class="lang-btn active" data-lang="pt-BR">🇧🇷 Português</button>
+                <button class="lang-btn" data-lang="en">🇺🇸 English</button>
+                <button class="lang-btn" data-lang="ja">🇯🇵 日本語</button>
+                <button class="lang-btn" data-lang="es">🇪🇸 Español</button>
+                <button class="lang-btn" data-lang="fr">🇫🇷 Français</button>
+                <button class="lang-btn" data-lang="it">🇮🇹 Italiano</button>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Sua pergunta sobre segurança:</label>
+            <textarea id="userInput" placeholder="Ex: Quais bairros devo evitar à noite? Ou: Which areas should I avoid at night?"></textarea>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-send" id="sendBtn">Enviar Pergunta</button>
+            <button class="btn-clear" id="clearBtn">Limpar</button>
+        </div>
+
+        <div class="error" id="errorMsg"></div>
+
+        <div class="response-area" id="responseArea">
+            <div class="response-label">Resposta do Agente:</div>
+            <div class="loading" id="loading">
+                <span class="spinner"></span>Processando sua pergunta...
+            </div>
+            <div class="response-text" id="responseText"></div>
+        </div>
+
+        <div class="info-box">
+            <div id="instructionsText">💡 Como usar:<br>1. Escolha o idioma<br>2. Digite sua pergunta sobre segurança em Rio de Janeiro<br>3. Clique em "Enviar Pergunta"<br>4. Receba uma resposta detalhada e dicas de prevenção</div>
+        </div>
+    </div>
+
+    <script>
+        let selectedLanguage = 'pt-BR';
+        const languageCodes = {
+            'pt-BR': 'Português Brasileiro',
+            'en': 'English',
+            'ja': '日本語',
+            'es': 'Español',
+            'fr': 'Français',
+            'it': 'Italiano'
+        };
+
+        // Dados sobre segurança no RJ (você pode expandir isso!)
+        const securityData = {
+            'pt-BR': {
+                instructions: '💡 Como usar:\n1. Escolha o idioma\n2. Digite sua pergunta sobre segurança em Rio de Janeiro\n3. Clique em "Enviar Pergunta"\n4. Receba uma resposta detalhada e dicas de prevenção',
+                dangerousAreas: [
+                    { name: 'Rocinha', risk: 'Alto', advice: 'Evitar especialmente à noite. Se necessário passar, ir acompanhada durante o dia.' },
+                    { name: 'Complexo da Maré', risk: 'Alto', advice: 'Evitar quando possível. Não circular sozinha, principalmente entre 18h-6h.' },
+                    { name: 'Complexo do Alemão', risk: 'Crítico', advice: 'Maior taxa de violência contra mulheres. Evitar ao máximo. Procure delegacia ou Ligue 180 se necessário.' },
+                    { name: 'Jacarépaguá e bairros vizinhos (Anil, Cidade de Deus, Curicica, Gardênia Azul, Taquara)', risk: 'Alto', advice: '4.163 casos de crimes contra mulheres. Cuidado redobrado à noite. Use transporte seguro.' },
+                    { name: 'Guaratiba/Pedra de Guaratiba', risk: 'Alto', advice: 'Alta concentração de estupros. Não circular sozinha. Compartilhe sua localização.' },
+                    { name: 'Centro do Rio', risk: 'Médio-Alto', advice: 'Alta taxa de feminicídio. Cuidado em ruas mal iluminadas. Evite se possível à noite.' },
+                    { name: 'Realengo', risk: 'Médio-Alto', advice: 'Zona de risco. Evitar deslocamentos noturnos. Mantenha vigilância.' },
+                    { name: 'Madureira', risk: 'Médio-Alto', advice: 'Cuidado especial à noite. Preferir acompanhamento e transporte seguro.' },
+                    { name: 'Penha', risk: 'Alto', advice: 'Concentração de violência. Não circular sozinha, especialmente entre 18h-6h.' },
+                    { name: 'Acari', risk: 'Alto', advice: 'Zona de risco elevado. Evitar ao máximo se possível. Mantenha atenção redobrada.' },
+                    { name: 'Jacarezinho', risk: 'Alto', advice: 'Área sensível. Não circular sozinha à noite.' },
+                    { name: 'Zona Portuária', risk: 'Médio-Alto', advice: 'Evitar à noite. Durante o dia, manter atenção com pertences.' }
+                ],
+                tips: [
+                    'Mantenha seu celular carregado e com créditos',
+                    'Compartilhe sua localização com alguém de confiança',
+                    'Use transporte seguro (Uber, 99, táxi autorizado)',
+                    'Evite exibir joias, eletrônicos e dinheiro',
+                    'Confie em seu instinto - se sentir insegura, procure ajuda',
+                    'Tenha números de emergência salvos: 190 (PM), 192 (PC), 100 (Disque Denúncia)',
+                    'Ligue 180 - Disque Mulher (denúncia de violência contra mulher)',
+                    'DEAM - Delegacia Especializada no Atendimento à Mulher: (21) 2332-3611',
+                    'Cuidado em ruas mal iluminadas e pontos de ônibus isolados',
+                    'Violência doméstica: 76% dos feminicídios ocorrem na residência'
+                ]
+            },
+            'en': {
+                instructions: '💡 How to use:\n1. Choose the language\n2. Type your question about safety in Rio de Janeiro\n3. Click "Send Question"\n4. Receive detailed answers and prevention tips',
+                dangerousAreas: [
+                    { name: 'Rocinha', risk: 'High', advice: 'Avoid especially at night. If necessary to go, travel accompanied during the day.' },
+                    { name: 'Complexo da Maré', risk: 'High', advice: 'Avoid if possible. Do not circulate alone, mainly between 6 PM - 6 AM.' },
+                    { name: 'Complexo do Alemão', risk: 'Critical', advice: 'Highest rate of violence against women. Avoid at all costs. Contact police or dial 180 if needed.' },
+                    { name: 'Jacarépaguá and surrounding neighborhoods', risk: 'High', advice: '4,163 cases of crimes against women. Extra care at night. Use safe transportation.' },
+                    { name: 'Guaratiba/Pedra de Guaratiba', risk: 'High', advice: 'High concentration of sexual assaults. Do not circulate alone. Share your location.' },
+                    { name: 'Rio de Janeiro Downtown', risk: 'Medium-High', advice: 'High rate of femicide. Be careful in poorly lit streets. Avoid at night if possible.' },
+                    { name: 'Realengo', risk: 'Medium-High', advice: 'High-risk zone. Avoid nighttime travel. Stay alert.' },
+                    { name: 'Madureira', risk: 'Medium-High', advice: 'Special care at night. Prefer accompanied travel and safe transportation.' },
+                    { name: 'Penha', risk: 'High', advice: 'Concentration of violence. Do not circulate alone, especially between 6 PM - 6 AM.' },
+                    { name: 'Acari', risk: 'High', advice: 'High-risk zone. Avoid if possible. Maintain heightened awareness.' },
+                    { name: 'Jacarezinho', risk: 'High', advice: 'Sensitive area. Do not circulate alone at night.' },
+                    { name: 'Port Zone', risk: 'Medium-High', advice: 'Avoid at night. During the day, keep attention on belongings.' }
+                ],
+                tips: [
+                    'Keep your cell phone charged and with credit',
+                    'Share your location with someone you trust',
+                    'Use safe transportation (Uber, 99, authorized taxi)',
+                    'Avoid displaying jewelry, electronics and money',
+                    'Trust your instinct - if you feel unsafe, seek help',
+                    'Have emergency numbers saved: 190 (PM), 192 (PC), 100 (Report line)',
+                    'Call 180 - Women Support Hotline (violence against women reporting)',
+                    'DEAM - Specialized Service for Women: (21) 2332-3611',
+                    'Be careful on poorly lit streets and isolated bus stops',
+                    'Domestic violence: 76% of femicides occur in the home'
+                ]
+            },
+            'ja': {
+                instructions: '💡 使い方:\n1. 言語を選択します\n2. リオデジャネイロの安全についての質問を入力します\n3. 「質問を送信」をクリックします\n4. 詳細な回答と予防のヒントを受け取ります',
+                dangerousAreas: [
+                    { name: 'ロシーニャ（Rocinha）', risk: '高', advice: '特に夜間は避けること。必要な場合は昼間に同行者と一緒に行くこと。' },
+                    { name: 'マレ複合施設', risk: '高', advice: '可能な限り避けること。特に夜18時～朝6時は一人で移動しないこと。' },
+                    { name: 'アレマォン複合施設', risk: '危機的', advice: '女性に対する暴力の最高率。可能な限り避けること。必要なら警察に連絡を。' },
+                    { name: 'ジャカレパグア周辺地域', risk: '高', advice: '女性対象犯罪4,163件。夜間は特に注意。安全な交通手段を使うこと。' },
+                    { name: 'グアラティバ地域', risk: '高', advice: '性的暴力の高濃度地域。一人で移動しないこと。位置情報を共有すること。' },
+                    { name: 'リオデジャネイロ中心部', risk: '中程度～高', advice: '女性殺害の高い率。暗い通りに注意。夜間は避けること。' },
+                    { name: 'レアレンゴ地域', risk: '中程度～高', advice: 'リスクの高い地域。夜間移動を避け、警戒を怠らないこと。' },
+                    { name: 'マデイレイラ地域', risk: '中程度～高', advice: '夜間は特に注意。同行者との移動が好ましい。' },
+                    { name: 'ペーニャ地域', risk: '高', advice: '暴力が集中する地域。特に夜18時～朝6時は一人で移動しないこと。' },
+                    { name: 'アカリ地域', risk: '高', advice: 'リスクの高い地域。可能な限り避けることを勧める。' },
+                    { name: 'ジャカレジーニョ', risk: '高', advice: '注意が必要な地域。夜間は一人で移動しないこと。' },
+                    { name: 'ポートゾーン', risk: '中程度～高', advice: '夜間は避けること。昼間でも荷物に注意すること。' }
+                ],
+                tips: [
+                    '携帯電話を充電した状態で保つこと',
+                    '信頼できる人と自分の居場所を共有すること',
+                    '安全な交通手段を使うこと（Uber、99など）',
+                    'アクセサリー、電子機器、現金を見せないこと',
+                    '直感を信じて、不安を感じたら助けを求めること',
+                    '緊急連絡先を保存しておくこと：190、192、100',
+                    '180に電話-女性向けホットライン（女性への暴力報告）',
+                    'DEAM - 女性専門サービス：(21) 2332-3611',
+                    '暗い通りや孤立したバス停に注意すること',
+                    'ドメスティックバイオレンス：女性殺害の76%は自宅で発生'
+                ]
+            },
+            'es': {
+                instructions: '💡 Cómo usar:\n1. Elija el idioma\n2. Escriba su pregunta sobre seguridad en Río de Janeiro\n3. Haga clic en "Enviar Pregunta"\n4. Reciba respuestas detalladas y consejos de prevención',
+                dangerousAreas: [
+                    { name: 'Rocinha', risk: 'Alto', advice: 'Evitar especialmente de noche. Si es necesario ir, viajar acompañada durante el día.' },
+                    { name: 'Complejo de Maré', risk: 'Alto', advice: 'Evitar si es posible. No circular sola, principalmente entre 18h-6h.' },
+                    { name: 'Complejo del Alemão', risk: 'Crítico', advice: 'Mayor tasa de violencia contra mujeres. Evitar a toda costa. Contacte a la policía o llame 180.' },
+                    { name: 'Jacarépaguá y barrios vecinos', risk: 'Alto', advice: '4.163 casos de crímenes contra mujeres. Cuidado especial de noche. Use transporte seguro.' },
+                    { name: 'Guaratiba/Pedra de Guaratiba', risk: 'Alto', advice: 'Alta concentración de agresiones sexuales. No circular sola. Comparta su ubicación.' },
+                    { name: 'Centro de Río de Janeiro', risk: 'Medio-Alto', advice: 'Alta tasa de feminicidio. Cuidado en calles mal iluminadas. Evite de noche si es posible.' },
+                    { name: 'Realengo', risk: 'Medio-Alto', advice: 'Zona de alto riesgo. Evitar viajes nocturnos. Manténgase alerta.' },
+                    { name: 'Madureira', risk: 'Medio-Alto', advice: 'Cuidado especial de noche. Preferir viajar acompañada y usar transporte seguro.' },
+                    { name: 'Penha', risk: 'Alto', advice: 'Concentración de violencia. No circular sola, especialmente entre 18h-6h.' },
+                    { name: 'Acari', risk: 'Alto', advice: 'Zona de alto riesgo. Evite si es posible. Mantenga mayor vigilancia.' },
+                    { name: 'Jacarezinho', risk: 'Alto', advice: 'Área sensible. No circular sola de noche.' },
+                    { name: 'Zona Portuaria', risk: 'Medio-Alto', advice: 'Evitar de noche. Durante el día, tener cuidado con pertenencias.' }
+                ],
+                tips: [
+                    'Mantén tu celular cargado y con crédito',
+                    'Comparte tu ubicación con alguien de confianza',
+                    'Usa transporte seguro (Uber, 99, taxi autorizado)',
+                    'Evita mostrar joyas, electrónicos y dinero',
+                    'Confía en tu instinto - si te sientes insegura, busca ayuda',
+                    'Guarda números de emergencia: 190 (PM), 192 (PC), 100 (Línea de denuncias)',
+                    'Llama 180 - Línea de ayuda para mujeres (denuncia de violencia)',
+                    'DEAM - Servicio especializado para mujeres: (21) 2332-3611',
+                    'Ten cuidado en calles mal iluminadas y paradas de autobús aisladas',
+                    'Violencia doméstica: 76% de feminicidios ocurren en el hogar'
+                ]
+            },
+            'fr': {
+                instructions: '💡 Comment utiliser:\n1. Choisissez la langue\n2. Tapez votre question sur la sécurité à Rio de Janeiro\n3. Cliquez sur "Envoyer la Question"\n4. Recevez des réponses détaillées et des conseils de prévention',
+                dangerousAreas: [
+                    { name: 'Rocinha', risk: 'Élevé', advice: 'À éviter surtout la nuit. Si nécessaire, voyager accompagnée pendant la journée.' },
+                    { name: 'Complexe de Maré', risk: 'Élevé', advice: 'À éviter si possible. Ne pas circuler seule, notamment entre 18h-6h.' },
+                    { name: 'Complexe du Alemão', risk: 'Critique', advice: 'Plus haut taux de violence envers les femmes. À éviter absolument. Contactez la police ou appelez 180.' },
+                    { name: 'Jacarépaguá et quartiers voisins', risk: 'Élevé', advice: '4.163 cas de crimes contre les femmes. Vigilance accrue la nuit. Utilisez les transports sûrs.' },
+                    { name: 'Guaratiba/Pedra de Guaratiba', risk: 'Élevé', advice: 'Forte concentration d\'agressions sexuelles. Ne pas circuler seule. Partagez votre localisation.' },
+                    { name: 'Centre de Rio de Janeiro', risk: 'Moyen-Élevé', advice: 'Haut taux de féminicide. Vigilance en rues mal éclairées. À éviter la nuit si possible.' },
+                    { name: 'Realengo', risk: 'Moyen-Élevé', advice: 'Zone à haut risque. Éviter les déplacements nocturnes. Restez vigilante.' },
+                    { name: 'Madureira', risk: 'Moyen-Élevé', advice: 'Attention particulière la nuit. Préférer voyager accompagnée et transports sûrs.' },
+                    { name: 'Penha', risk: 'Élevé', advice: 'Concentration de violences. Ne pas circuler seule, surtout entre 18h-6h.' },
+                    { name: 'Acari', risk: 'Élevé', advice: 'Zone à très haut risque. À éviter si possible. Rester très vigilante.' },
+                    { name: 'Jacarezinho', risk: 'Élevé', advice: 'Zone sensible. Ne pas circuler seule la nuit.' },
+                    { name: 'Zone Portuaire', risk: 'Moyen-Élevé', advice: 'À éviter la nuit. La journée, faire attention à ses affaires.' }
+                ],
+                tips: [
+                    'Gardez votre téléphone chargé et avec du crédit',
+                    'Partagez votre localisation avec quelqu\'un de confiance',
+                    'Utilisez les transports sûrs (Uber, 99, taxi agréé)',
+                    'Évitez de montrer bijoux, électronique et argent',
+                    'Faites confiance à votre intuition - si vous vous sentez en danger, demandez de l\'aide',
+                    'Conservez les numéros d\'urgence : 190 (PM), 192 (PC), 100 (Ligne de signalement)',
+                    'Appelez 180 - Ligne d\'assistance aux femmes (signalement de violences)',
+                    'DEAM - Service spécialisé pour les femmes : (21) 2332-3611',
+                    'Soyez vigilante dans les rues mal éclairées et arrêts de bus isolés',
+                    'Violences domestiques : 76% des féminicides se produisent au domicile'
+                ]
+            },
+            'it': {
+                instructions: '💡 Come usare:\n1. Scegli la lingua\n2. Digita la tua domanda sulla sicurezza a Rio de Janeiro\n3. Fai clic su "Invia Domanda"\n4. Ricevi risposte dettagliate e consigli di prevenzione',
+                dangerousAreas: [
+                    { name: 'Rocinha', risk: 'Alto', advice: 'Evitare soprattutto di notte. Se necessario, viaggiare accompagnate durante il giorno.' },
+                    { name: 'Complesso di Maré', risk: 'Alto', advice: 'Evitare se possibile. Non circolare da sole, principalmente tra le 18h-6h.' },
+                    { name: 'Complesso del Alemão', risk: 'Critico', advice: 'Più alto tasso di violenza contro le donne. Evitare a tutti i costi. Contattare la polizia.' },
+                    { name: 'Jacarépaguá e quartieri limitrofi', risk: 'Alto', advice: '4.163 casi di crimini contro le donne. Attenzione speciale di notte. Usare trasporti sicuri.' },
+                    { name: 'Guaratiba/Pedra de Guaratiba', risk: 'Alto', advice: 'Alta concentrazione di aggressioni sessuali. Non circolare da sole. Condividi la tua posizione.' },
+                    { name: 'Centro di Rio de Janeiro', risk: 'Medio-Alto', advice: 'Alto tasso di femminicidio. Attenzione in strade scarsamente illuminate. Evitare di notte se possibile.' },
+                    { name: 'Realengo', risk: 'Medio-Alto', advice: 'Zona ad alto rischio. Evitare i viaggi notturni. Rimani vigile.' },
+                    { name: 'Madureira', risk: 'Medio-Alto', advice: 'Attenzione particolare di notte. Preferire viaggiare accompagnate e trasporti sicuri.' },
+                    { name: 'Penha', risk: 'Alto', advice: 'Concentrazione di violenze. Non circolare da sole, specialmente tra 18h-6h.' },
+                    { name: 'Acari', risk: 'Alto', advice: 'Zona ad altissimo rischio. Evitare se possibile. Rimani molto vigile.' },
+                    { name: 'Jacarezinho', risk: 'Alto', advice: 'Area sensibile. Non circolare da sole di notte.' },
+                    { name: 'Zona Portuale', risk: 'Medio-Alto', advice: 'Evitare di notte. Durante il giorno, fare attenzione ai propri effetti.' }
+                ],
+                tips: [
+                    'Mantieni il tuo cellulare carico e con credito',
+                    'Condividi la tua posizione con qualcuno di fiducia',
+                    'Usa i trasporti sicuri (Uber, 99, taxi autorizzato)',
+                    'Evita di mostrare gioielli, elettronica e denaro',
+                    'Fidati del tuo istinto - se ti senti al sicuro, chiedi aiuto',
+                    'Salva i numeri di emergenza: 190 (PM), 192 (PC), 100 (Linea di segnalazione)',
+                    'Chiama 180 - Linea di assistenza per donne (segnalazione violenze)',
+                    'DEAM - Servizio specializzato per donne: (21) 2332-3611',
+                    'Stai attenta nelle strade scarsamente illuminate e nelle fermate isolate',
+                    'Violenze domestiche: il 76% dei femminicidi avviene in casa'
+                ]
+            }
+        };
+
+        // Event listeners para seleção de idioma
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedLanguage = this.dataset.lang;
+                
+                // Atualizar as instruções dinamicamente
+                const data = securityData[selectedLanguage];
+                const instructionsText = data.instructions.split('\n').map(line => line).join('<br>');
+                document.getElementById('instructionsText').innerHTML = instructionsText;
+            });
+        });
+
+        // Enviar pergunta
+        document.getElementById('sendBtn').addEventListener('click', async function() {
+            const userInput = document.getElementById('userInput').value.trim();
+            const errorMsg = document.getElementById('errorMsg');
+            const responseArea = document.getElementById('responseArea');
+            const loading = document.getElementById('loading');
+            const responseText = document.getElementById('responseText');
+
+            errorMsg.style.display = 'none';
+
+            if (!userInput) {
+                errorMsg.textContent = 'Por favor, escreva uma pergunta!';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            // Mostrar loading
+            responseArea.classList.add('active');
+            loading.style.display = 'block';
+            responseText.innerHTML = '';
+
+            // Simular processamento (você pode integrar com Gemini API depois)
+            setTimeout(() => {
+                const data = securityData[selectedLanguage];
+                let response = '';
+
+                // Lógica simples para detectar o tipo de pergunta
+                const userInputLower = userInput.toLowerCase();
+                
+                if (userInputLower.includes('bairr') || userInputLower.includes('área') || userInputLower.includes('local') || 
+                    userInputLower.includes('area') || userInputLower.includes('neighborhood') || userInputLower.includes('zone') ||
+                    userInputLower.includes('地域') || userInputLower.includes('barrio') || userInputLower.includes('quartier')) {
+                    
+                    response = gerarRespostaAreas(data, selectedLanguage);
+                } else {
+                    response = gerarRespostaDicas(data, selectedLanguage);
+                }
+
+                loading.style.display = 'none';
+                responseText.innerHTML = response;
+            }, 1500);
+        });
+
+        // Limpar formulário
+        document.getElementById('clearBtn').addEventListener('click', function() {
+            document.getElementById('userInput').value = '';
+            document.getElementById('responseArea').classList.remove('active');
+            document.getElementById('errorMsg').style.display = 'none';
+        });
+
+        function gerarRespostaAreas(data, lang) {
+            let html = '<strong>🚨 Áreas de Risco no Rio de Janeiro:</strong><br><br>';
+            
+            data.dangerousAreas.forEach(area => {
+                html += `<div style="margin-bottom: 12px; padding: 10px; background: white; border-left: 4px solid #667eea; border-radius: 4px;">`;
+                html += `<strong>${area.name}</strong> - Risco: <span style="color: #d32f2f; font-weight: bold;">${area.risk}</span><br>`;
+                html += `<span style="color: #555; font-size: 13px;">✓ ${area.advice}</span>`;
+                html += `</div>`;
+            });
+
+            html += `<br><strong>📋 Dicas Importantes:</strong><br>`;
+            data.tips.forEach(tip => {
+                html += `<div style="margin: 8px 0; padding-left: 20px;">✓ ${tip}</div>`;
+            });
+
+            return html;
+        }
+
+        function gerarRespostaDicas(data, lang) {
+            let html = '<strong>💡 Dicas de Segurança para Mulheres no RJ:</strong><br><br>';
+            
+            data.tips.forEach(tip => {
+                html += `<div style="margin: 10px 0; padding-left: 20px;">✓ ${tip}</div>`;
+            });
+
+            html += `<br><strong>⚠️ Principais Áreas de Risco:</strong><br>`;
+            data.dangerousAreas.slice(0, 3).forEach(area => {
+                html += `<div style="margin: 8px 0;">• ${area.name}</div>`;
+            });
+
+            return html;
+        }
+    </script>
+</body>
+</html>
